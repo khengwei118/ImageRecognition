@@ -11,12 +11,17 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int CAMERA_REQUEST_CODE = 10001;
     private ImageView imageView;
     private ListView listView;
+    private ImageClassifier imageClassifier;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +44,12 @@ public class MainActivity extends AppCompatActivity {
         imageView = findViewById(R.id.iv_capture);
         listView = findViewById(R.id.lv_probabilities);
         Button takepicture = findViewById(R.id.bt_take_pic);
+
+        try {
+            imageClassifier = new ImageClassifier(this);
+        } catch (IOException e) {
+            Log.e("Image Classifier Error", "Error" + e);
+        }
 
         takepicture.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,8 +76,9 @@ public class MainActivity extends AppCompatActivity {
                     photo, 0);
             // creating a list of string to display in list view
             final List<String> predicitonsList = new ArrayList<>();
+            // displaying predictions
             for (ImageClassifier.Recognition recog : predicitons) {
-                predicitonsList.add(recog.getName() + "  ::::::::::  " + recog.getConfidence());
+                predicitonsList.add("Label: " + recog.getName() + " Confidence: " + recog.getConfidence());
             }
             // creating an array adapter to display the classification result in list view
             ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
