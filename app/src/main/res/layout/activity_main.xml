@@ -15,13 +15,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        android:contentDescription="ImageBox"
         tools:srcCompat="@tools:sample/avatars" />
 
     <Button
         android:id="@+id/bt_take_pic"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="12dp"
+        app:backgroundTint="@color/teal_700"
         android:text="Take Picture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +34,6 @@
         android:id="@+id/lv_probabilities"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:background="@color/teal_200"
         app:layout_constraintBottom_toTopOf="@+id/bt_take_pic"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
