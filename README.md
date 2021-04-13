@@ -1,2 +1,2 @@
 # ImageRecognition Android App
-# Work in progress
+Work in progress
