@@ -63,6 +63,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // if this is the result of our camera image request
@@ -75,17 +77,42 @@ public class MainActivity extends AppCompatActivity {
             List<ImageClassifier.Recognition> predicitons = imageClassifier.recognizeImage(
                     photo, 0);
             // creating a list of string to display in list view
-            final List<String> predicitonsList = new ArrayList<>();
+            final List<String> predictionsList = new ArrayList<>();
             // displaying predictions
-            for (ImageClassifier.Recognition recog : predicitons) {
-                predicitonsList.add("Label: " + recog.getName() + " Confidence: " + recog.getConfidence());
+            for (ImageClassifier.Recognition rec : predicitons) {
+                String objName = removeDigits(rec.getName());
+                objName = removeOtherWords(objName);
+                double objConf = (Math.round((((double) rec.getConfidence()) * 10000.0))) / 100.0;
+                predictionsList.add(objName + ", " + objConf + "% confident");
             }
             // creating an array adapter to display the classification result in list view
             ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
-                    this, R.layout.support_simple_spinner_dropdown_item, predicitonsList);
+                    this, R.layout.support_simple_spinner_dropdown_item, predictionsList);
             listView.setAdapter(predictionsAdapter);
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    // helper method to remove digits from label name
+    private String removeDigits(String name) {
+        String result = "";
+        for (int i = 0; i < name.length(); i++) {
+            if (!Character.isDigit(name.charAt(i))) {
+                result += name.charAt(i);
+            }
+        }
+        return result;
+    }
+
+    // helper method to remove words after first comma
+    private String removeOtherWords(String name) {
+        int commaIndex = name.length() - 1;
+        for (int i = name.length() - 1; i >= 0; i--) {
+            if (name.charAt(i) == ',') {
+                commaIndex = i - 1;
+            }
+        }
+        return name.substring(0, commaIndex + 1);
     }
 
 
