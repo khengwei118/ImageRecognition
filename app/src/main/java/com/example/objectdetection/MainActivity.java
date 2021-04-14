@@ -5,9 +5,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -83,29 +85,46 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // if this is the result of our camera image request
-        if (requestCode == CAMERA_REQUEST_CODE) {
+        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
             Bitmap photo = (Bitmap) Objects.requireNonNull(Objects.requireNonNull(data).getExtras()).get("data");
             // displaying this bitmap in imageview
+            System.out.println("Photo:" + photo);
             imageView.setImageBitmap(photo);
-            // pass this bitmap to classifier to make prediction
-            List<ImageClassifier.Recognition> predictions = imageClassifier.recognizeImage(
-                    photo, 0);
-            // creating a list of string to display in list view
-            final List<String> predictionsList = new ArrayList<>();
-            // displaying predictions
-            for (ImageClassifier.Recognition rec : predictions) {
-                String objName = removeDigits(rec.getName());
-                objName = removeOtherWords(objName);
-                double objConf = (Math.round((((double) rec.getConfidence()) * 10000.0))) / 100.0;
-                predictionsList.add(objName + ", " + objConf + "% confident");
-            }
-            // creating an array adapter to display the classification result in list view
-            ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
-                    this, R.layout.support_simple_spinner_dropdown_item, predictionsList);
-            listView.setAdapter(predictionsAdapter);
+            classifyImage(photo);
         }
+        if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            Uri imageUri = data.getData();
+            try {
+                Bitmap photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                imageView.setImageBitmap(photo);
+                classifyImage(photo);
+            } catch (IOException e) {
+                Log.e("Bitmap Error", "Error:" + e);
+            }
+
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void classifyImage(Bitmap photo) {
+        // pass this bitmap to classifier to make prediction
+        List<ImageClassifier.Recognition> predictions = imageClassifier.recognizeImage(
+                photo, 0);
+        // creating a list of string to display in list view
+        final List<String> predictionsList = new ArrayList<>();
+        // displaying predictions
+        for (ImageClassifier.Recognition rec : predictions) {
+            String objName = removeDigits(rec.getName());
+            objName = removeOtherWords(objName);
+            double objConf = (Math.round((((double) rec.getConfidence()) * 10000.0))) / 100.0;
+            predictionsList.add(objName + ", " + objConf + "% confident");
+        }
+        // creating an array adapter to display the classification result in list view
+        ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
+                this, R.layout.support_simple_spinner_dropdown_item, predictionsList);
+        listView.setAdapter(predictionsAdapter);
     }
 
     // helper method to remove digits from label name
@@ -184,8 +203,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickImage() {
-        Intent imageIntent = new Intent(Intent.ACTION_GET_CONTENT);
-        imageIntent.setType("image/*");
+        Intent imageIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        //imageIntent.setType("image/*");
         startActivityForResult(imageIntent, IMAGE_REQUEST_CODE);
     }
 
