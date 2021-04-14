@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,9 +24,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -44,7 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView5;
     private Switch confSwitch;
 
-    private boolean switchedThisTurn = false;
+    private TextToSpeech mTTS;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         //listView = findViewById(R.id.lv_probabilities);
         Button takePic = findViewById(R.id.bt_take_pic);
         Button openGallery = findViewById(R.id.bt_open_gal);
+        Button speak = findViewById(R.id.bt_speak);
         textView1 = findViewById(R.id.textView1);
         textView2 = findViewById(R.id.textView2);
         textView3 = findViewById(R.id.textView3);
@@ -96,6 +103,32 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        mTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            //TODO seems to be bug here, TTS doesnt work
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    mTTS.setLanguage(Locale.US);
+                } else {
+                    Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        speak.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String wordToSpeak = textView1.getText().toString()
+                        .replaceAll("[0-9](.*)","").trim();
+                if (wordToSpeak.equals("")) {
+                    Toast.makeText(MainActivity.this, "Invalid Word", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MainActivity.this, wordToSpeak, Toast.LENGTH_SHORT).show();
+                    mTTS.speak(wordToSpeak, TextToSpeech.QUEUE_FLUSH, null, "");
+                }
+            }
+        });
+
         /*confSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
@@ -115,7 +148,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // if this is the result of our camera image request
-        //switchedThisTurn = false;
         confSwitch.setChecked(false);
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
@@ -156,8 +188,6 @@ public class MainActivity extends AppCompatActivity {
         }
         replaceTexts(predictionsList, predictionsListConf);
 
-
-
         /*
         // creates an array adapter to display the classification result in list view
         ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
@@ -165,6 +195,7 @@ public class MainActivity extends AppCompatActivity {
         listView.setAdapter(predictionsAdapter); */
     }
 
+    // Updates text in the textView boxes
     private void replaceTexts(List<String> predictionsList, List<Double> predictionsListConf) {
         String text1 = predictionsList.subList(0,1).toString()
                 .replaceAll("\\[","").replaceAll("\\]","");
@@ -180,11 +211,10 @@ public class MainActivity extends AppCompatActivity {
         textView2.setText(text2);
         textView3.setText(text3);
 
-
+        // Updates textView with confidence percentages if confidence switch is on
         confSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                switchedThisTurn = true;
                 if (isChecked) {
                     Log.i("Switch", "ON");
                     String textConf1 = text1;
@@ -208,9 +238,6 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
-
-
     }
 
     // Removes digits from label name
