@@ -28,6 +28,9 @@ public class MainActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1000;
     private static final int CAMERA_REQUEST_CODE = 10001;
+    private static final int READ_STORAGE_PERMISSION_REQUEST_CODE = 1002;
+    private static final int IMAGE_REQUEST_CODE = 1003;
+
     private ImageView imageView;
     private ListView listView;
     private ImageClassifier imageClassifier;
@@ -44,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
         imageView = findViewById(R.id.iv_capture);
         listView = findViewById(R.id.lv_probabilities);
         Button takepicture = findViewById(R.id.bt_take_pic);
+        Button openGallery = findViewById(R.id.bt_open_gal);
 
         try {
             imageClassifier = new ImageClassifier(this);
@@ -54,10 +58,21 @@ public class MainActivity extends AppCompatActivity {
         takepicture.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (hasPermission()) {
+                if (hasPermission("camera")) {
                     openCamera();
                 } else {
-                    requestPermission();
+                    requestPermission("camera");
+                }
+            }
+        });
+
+        openGallery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (hasPermission("readStorage")) {
+                    pickImage();
+                } else {
+                    requestPermission("readStorage");
                 }
             }
         });
@@ -124,10 +139,19 @@ public class MainActivity extends AppCompatActivity {
             if (hasAllPermissions(grantResults)) {
                 openCamera();
             } else {
-                requestPermission();
+                requestPermission("camera");
+            }
+        }
+        if (requestCode == READ_STORAGE_PERMISSION_REQUEST_CODE) {
+            if (hasAllPermissions(grantResults)) {
+                pickImage();
+            } else {
+                requestPermission("readStorage");
             }
         }
     }
+
+
 
     private boolean hasAllPermissions(int[] grantResults) {
         for (int result: grantResults) {
@@ -138,13 +162,20 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void requestPermission() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    private void requestPermission(String permType) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("camera")) {
             if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                 Toast.makeText(this, "Camera Permission Required", Toast.LENGTH_SHORT).show();
             }
             requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
         }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("readStorage")) {
+            if(shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                Toast.makeText(this, "Storage Permission Required", Toast.LENGTH_SHORT).show();
+            }
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_STORAGE_PERMISSION_REQUEST_CODE);
+        }
+
     }
 
     private void openCamera() {
@@ -152,10 +183,20 @@ public class MainActivity extends AppCompatActivity {
         startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
     }
 
-    private boolean hasPermission() {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+    private void pickImage() {
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.setType("image/*");
+        startActivityForResult(intent, IMAGE_REQUEST_CODE);
+    }
+
+    private boolean hasPermission(String permType) {
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("camera")) {
             return checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
         }
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("readStorage")) {
+            return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
+        }
+
         return true;
     }
 }
