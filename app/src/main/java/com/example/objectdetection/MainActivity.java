@@ -44,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView5;
     private Switch confSwitch;
 
-    private boolean confSwitchOn = false;
+    private boolean switchedThisTurn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,7 +96,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        confSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*confSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
                 if (isChecked) {
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
                     confSwitchOn = false;
                 }
             }
-        });
+        }); */
     }
 
 
@@ -115,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // if this is the result of our camera image request
+        switchedThisTurn = false;
+        confSwitch.setChecked(false);
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
             Bitmap photo = (Bitmap) data.getExtras().get("data");
@@ -170,11 +172,43 @@ public class MainActivity extends AppCompatActivity {
                 .replaceAll("\\[","").replaceAll("\\]","");
         String text3 = predictionsList.subList(2,3).toString()
                 .replaceAll("\\[","").replaceAll("\\]","");
+
         textView4.setText("the object is");
         textView5.setText("other possibilities:");
-        textView1.setText(text1);
-        textView2.setText(text2);
-        textView3.setText(text3);
+
+        if (!switchedThisTurn) {
+            textView1.setText(text1);
+            textView2.setText(text2);
+            textView3.setText(text3);
+        }
+
+        confSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                switchedThisTurn = true;
+                if (isChecked) {
+                    Log.i("Switch", "ON");
+                    String textConf1 = text1;
+                    String textConf2 = text2;
+                    String textConf3 = text3;
+                    textConf1 = textConf1.concat(predictionsListConf.subList(0,1).toString());
+                    textConf2 = textConf2.concat(predictionsListConf.subList(1,2).toString());
+                    textConf3 = textConf3.concat(predictionsListConf.subList(2,3).toString());
+                    System.out.println(textConf1);
+                    textView1.setText(textConf1);
+                    textView2.setText(textConf2);
+                    textView3.setText(textConf3);
+                } else {
+                    Log.i("Switch", "OFF");
+                    textView1.setText(text1);
+                    textView2.setText(text2);
+                    textView3.setText(text3);
+                }
+            }
+        });
+
+
+        switchedThisTurn = false;
 
     }
 
