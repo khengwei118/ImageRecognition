@@ -45,10 +45,11 @@ public class MainActivity extends AppCompatActivity {
         initializeUIElements();
     }
 
+    // Initializes UI Elements
     private void initializeUIElements() {
         imageView = findViewById(R.id.iv_capture);
         listView = findViewById(R.id.lv_probabilities);
-        Button takepicture = findViewById(R.id.bt_take_pic);
+        Button takePic = findViewById(R.id.bt_take_pic);
         Button openGallery = findViewById(R.id.bt_open_gal);
 
         try {
@@ -57,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Image Classifier Error", "Error" + e);
         }
 
-        takepicture.setOnClickListener(new View.OnClickListener() {
+        takePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (hasPermission("camera")) {
@@ -87,51 +88,49 @@ public class MainActivity extends AppCompatActivity {
         // if this is the result of our camera image request
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
-            Bitmap photo = (Bitmap) Objects.requireNonNull(Objects.requireNonNull(data).getExtras()).get("data");
-            // displaying this bitmap in imageView
-            System.out.println("Photo:" + photo);
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+            // displays the bitmap in ImageView
             imageView.setImageBitmap(photo);
             classifyImage(photo);
         }
         if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri imageUri = data.getData();
             try {
-                // cast URI to Bitmap
+                // casts URI to Bitmap
                 Bitmap photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                 imageView.setImageBitmap(photo);
                 classifyImage(photo);
             } catch (IOException e) {
                 Log.e("Bitmap Error", "Error:" + e);
             }
-
         }
 
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    // Runs the image classification model and displays in list view
     private void classifyImage(Bitmap photo) {
-        // pass this bitmap to classifier to make prediction
         List<ImageClassifier.Recognition> predictions = imageClassifier.recognizeImage(
                 photo, 0);
-        // creating a list of string to display in list view
         final List<String> predictionsList = new ArrayList<>();
-        // displaying predictions
+        // displays predictions
         for (ImageClassifier.Recognition rec : predictions) {
             String objName = removeDigits(rec.getName());
             objName = removeOtherWords(objName);
+            // converts confidence numbers into % form and limits to 2 decimal places
             double objConf = (Math.round((((double) rec.getConfidence()) * 10000.0))) / 100.0;
-            predictionsList.add(objName + ", " + objConf + "% confident");
+            predictionsList.add(objName + ", " + objConf + "% confidence");
         }
-        // creating an array adapter to display the classification result in list view
+        // creates an array adapter to display the classification result in list view
         ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
                 this, R.layout.support_simple_spinner_dropdown_item, predictionsList);
         listView.setAdapter(predictionsAdapter);
     }
 
-    // helper method to remove digits from label name
+    // Removes digits from label name
+    // Needed due to certain TensorFlow models having numbers before words in labels.txt String
     private String removeDigits(String name) {
         StringBuilder sb = new StringBuilder();
-        String result = "";
         for (int i = 0; i < name.length(); i++) {
             if (!Character.isDigit(name.charAt(i))) {
                 sb.append(name.charAt(i));
@@ -140,7 +139,8 @@ public class MainActivity extends AppCompatActivity {
         return sb.toString();
     }
 
-    // helper method to remove words after first comma
+    // Removes words after first comma
+    // Needed due to certain TensorFlow models having multiple words in labels.txt String
     private String removeOtherWords(String name) {
         int commaIndex = name.length() - 1;
         for (int i = name.length() - 1; i >= 0; i--) {
@@ -152,10 +152,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    // Opens camera or storage/gallery after checking for permissions
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        // if this is the result of our camera permission request
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (hasAllPermissions(grantResults)) {
                 openCamera();
@@ -172,8 +172,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
+    // Checks for all permissions
     private boolean hasAllPermissions(int[] grantResults) {
         for (int result: grantResults) {
             if (result == PackageManager.PERMISSION_DENIED) {
@@ -183,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
+    // Requests permissions, takes in String "camera" or "readStorage"
     private void requestPermission(String permType) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("camera")) {
             if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
@@ -196,20 +196,23 @@ public class MainActivity extends AppCompatActivity {
             }
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_STORAGE_PERMISSION_REQUEST_CODE);
         }
-
     }
 
+    // Captures image from camera
     private void openCamera() {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
     }
 
+    // Picks image from storage/gallery
     private void pickImage() {
         Intent imageIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         //imageIntent.setType("image/*");
         startActivityForResult(imageIntent, IMAGE_REQUEST_CODE);
     }
 
+    // Checks for permissions if Android version is later than M
+    // Checks for permissions to open camera and read storage
     private boolean hasPermission(String permType) {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("camera")) {
             return checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
@@ -217,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("readStorage")) {
             return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
-
         return true;
     }
 }
