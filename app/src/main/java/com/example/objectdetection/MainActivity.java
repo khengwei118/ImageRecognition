@@ -15,16 +15,15 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -34,8 +33,13 @@ public class MainActivity extends AppCompatActivity {
     private static final int IMAGE_REQUEST_CODE = 1003;
 
     private ImageView imageView;
-    private ListView listView;
+    //private ListView listView;
     private ImageClassifier imageClassifier;
+    private TextView textView1;
+    private TextView textView2;
+    private TextView textView3;
+    private TextView textView4;
+    private TextView textView5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,9 +52,15 @@ public class MainActivity extends AppCompatActivity {
     // Initializes UI Elements
     private void initializeUIElements() {
         imageView = findViewById(R.id.iv_capture);
-        listView = findViewById(R.id.lv_probabilities);
+        //listView = findViewById(R.id.lv_probabilities);
         Button takePic = findViewById(R.id.bt_take_pic);
         Button openGallery = findViewById(R.id.bt_open_gal);
+        textView1 = findViewById(R.id.textView1);
+        textView2 = findViewById(R.id.textView2);
+        textView3 = findViewById(R.id.textView3);
+        textView4 = findViewById(R.id.textView4);
+        textView5 = findViewById(R.id.textView5);
+
 
         try {
             imageClassifier = new ImageClassifier(this);
@@ -113,18 +123,28 @@ public class MainActivity extends AppCompatActivity {
         List<ImageClassifier.Recognition> predictions = imageClassifier.recognizeImage(
                 photo, 0);
         final List<String> predictionsList = new ArrayList<>();
+        final List<Double> predictionsListConf = new ArrayList<>();
         // displays predictions
         for (ImageClassifier.Recognition rec : predictions) {
             String objName = removeDigits(rec.getName());
             objName = removeOtherWords(objName);
             // converts confidence numbers into % form and limits to 2 decimal places
             double objConf = (Math.round((((double) rec.getConfidence()) * 10000.0))) / 100.0;
-            predictionsList.add(objName + ", " + objConf + "% confidence");
+            predictionsList.add(objName);
+            predictionsListConf.add(objConf);
         }
+        textView1.setText(predictionsList.subList(0,1).toString()
+                .replaceAll("\\[","").replaceAll("\\]",""));
+        textView2.setText(predictionsList.subList(1,2).toString()
+                .replaceAll("\\[","").replaceAll("\\]",""));
+        textView3.setText(predictionsList.subList(2,3).toString()
+                .replaceAll("\\[","").replaceAll("\\]",""));
+
+        /*
         // creates an array adapter to display the classification result in list view
         ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
-                this, R.layout.support_simple_spinner_dropdown_item, predictionsList);
-        listView.setAdapter(predictionsAdapter);
+                this, R.layout.support_simple_spinner_dropdown_item, predictionsList.subList(0,3));
+        listView.setAdapter(predictionsAdapter); */
     }
 
     // Removes digits from label name
