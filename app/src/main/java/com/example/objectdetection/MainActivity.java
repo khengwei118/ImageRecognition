@@ -115,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         // if this is the result of our camera image request
-        switchedThisTurn = false;
+        //switchedThisTurn = false;
         confSwitch.setChecked(false);
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
@@ -176,11 +176,10 @@ public class MainActivity extends AppCompatActivity {
         textView4.setText("the object is");
         textView5.setText("other possibilities:");
 
-        if (!switchedThisTurn) {
-            textView1.setText(text1);
-            textView2.setText(text2);
-            textView3.setText(text3);
-        }
+        textView1.setText(text1);
+        textView2.setText(text2);
+        textView3.setText(text3);
+
 
         confSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -191,9 +190,12 @@ public class MainActivity extends AppCompatActivity {
                     String textConf1 = text1;
                     String textConf2 = text2;
                     String textConf3 = text3;
-                    textConf1 = textConf1.concat(predictionsListConf.subList(0,1).toString());
-                    textConf2 = textConf2.concat(predictionsListConf.subList(1,2).toString());
-                    textConf3 = textConf3.concat(predictionsListConf.subList(2,3).toString());
+                    textConf1 = textConf1.concat("  " + predictionsListConf.subList(0,1).toString()
+                            .replaceAll("\\[","").replaceAll("\\]","") + "%");
+                    textConf2 = textConf2.concat("  " + predictionsListConf.subList(1,2).toString()
+                            .replaceAll("\\[","").replaceAll("\\]","")+ "%");
+                    textConf3 = textConf3.concat("  " + predictionsListConf.subList(2,3).toString()
+                            .replaceAll("\\[","").replaceAll("\\]","") + "%");
                     System.out.println(textConf1);
                     textView1.setText(textConf1);
                     textView2.setText(textConf2);
@@ -208,7 +210,6 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        switchedThisTurn = false;
 
     }
 
