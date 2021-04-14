@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
             Bitmap photo = (Bitmap) Objects.requireNonNull(Objects.requireNonNull(data).getExtras()).get("data");
-            // displaying this bitmap in imageview
+            // displaying this bitmap in imageView
             System.out.println("Photo:" + photo);
             imageView.setImageBitmap(photo);
             classifyImage(photo);
@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri imageUri = data.getData();
             try {
+                // cast URI to Bitmap
                 Bitmap photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
                 imageView.setImageBitmap(photo);
                 classifyImage(photo);
@@ -129,13 +130,14 @@ public class MainActivity extends AppCompatActivity {
 
     // helper method to remove digits from label name
     private String removeDigits(String name) {
+        StringBuilder sb = new StringBuilder();
         String result = "";
         for (int i = 0; i < name.length(); i++) {
             if (!Character.isDigit(name.charAt(i))) {
-                result += name.charAt(i);
+                sb.append(name.charAt(i));
             }
         }
-        return result;
+        return sb.toString();
     }
 
     // helper method to remove words after first comma
