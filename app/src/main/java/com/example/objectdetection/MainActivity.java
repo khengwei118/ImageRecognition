@@ -27,7 +27,7 @@ import java.util.Objects;
 public class MainActivity extends AppCompatActivity {
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1000;
-    private static final int CAMERA_REQUEST_CODE = 10001;
+    private static final int CAMERA_REQUEST_CODE = 1001;
     private static final int READ_STORAGE_PERMISSION_REQUEST_CODE = 1002;
     private static final int IMAGE_REQUEST_CODE = 1003;
 
@@ -89,12 +89,12 @@ public class MainActivity extends AppCompatActivity {
             // displaying this bitmap in imageview
             imageView.setImageBitmap(photo);
             // pass this bitmap to classifier to make prediction
-            List<ImageClassifier.Recognition> predicitons = imageClassifier.recognizeImage(
+            List<ImageClassifier.Recognition> predictions = imageClassifier.recognizeImage(
                     photo, 0);
             // creating a list of string to display in list view
             final List<String> predictionsList = new ArrayList<>();
             // displaying predictions
-            for (ImageClassifier.Recognition rec : predicitons) {
+            for (ImageClassifier.Recognition rec : predictions) {
                 String objName = removeDigits(rec.getName());
                 objName = removeOtherWords(objName);
                 double objConf = (Math.round((((double) rec.getConfidence()) * 10000.0))) / 100.0;
@@ -184,9 +184,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pickImage() {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.setType("image/*");
-        startActivityForResult(intent, IMAGE_REQUEST_CODE);
+        Intent imageIntent = new Intent(Intent.ACTION_GET_CONTENT);
+        imageIntent.setType("image/*");
+        startActivityForResult(imageIntent, IMAGE_REQUEST_CODE);
     }
 
     private boolean hasPermission(String permType) {
