@@ -16,8 +16,10 @@ import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -40,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView3;
     private TextView textView4;
     private TextView textView5;
+    private Switch confSwitch;
+
+    private boolean confSwitchOn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         textView3 = findViewById(R.id.textView3);
         textView4 = findViewById(R.id.textView4);
         textView5 = findViewById(R.id.textView5);
+        confSwitch = findViewById(R.id.confSwitch);
 
 
         try {
@@ -86,6 +92,19 @@ public class MainActivity extends AppCompatActivity {
                     pickImage();
                 } else {
                     requestPermission("readStorage");
+                }
+            }
+        });
+
+        confSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
+                if (isChecked) {
+                    Log.i("Switch", "ON");
+                    confSwitchOn = true;
+                } else {
+                    Log.i("Switch", "OFF");
+                    confSwitchOn = false;
                 }
             }
         });
@@ -133,18 +152,30 @@ public class MainActivity extends AppCompatActivity {
             predictionsList.add(objName);
             predictionsListConf.add(objConf);
         }
-        textView1.setText(predictionsList.subList(0,1).toString()
-                .replaceAll("\\[","").replaceAll("\\]",""));
-        textView2.setText(predictionsList.subList(1,2).toString()
-                .replaceAll("\\[","").replaceAll("\\]",""));
-        textView3.setText(predictionsList.subList(2,3).toString()
-                .replaceAll("\\[","").replaceAll("\\]",""));
+        replaceTexts(predictionsList, predictionsListConf);
+
+
 
         /*
         // creates an array adapter to display the classification result in list view
         ArrayAdapter<String> predictionsAdapter = new ArrayAdapter<>(
                 this, R.layout.support_simple_spinner_dropdown_item, predictionsList.subList(0,3));
         listView.setAdapter(predictionsAdapter); */
+    }
+
+    private void replaceTexts(List<String> predictionsList, List<Double> predictionsListConf) {
+        String text1 = predictionsList.subList(0,1).toString()
+                .replaceAll("\\[","").replaceAll("\\]","");
+        String text2 = predictionsList.subList(1,2).toString()
+                .replaceAll("\\[","").replaceAll("\\]","");
+        String text3 = predictionsList.subList(2,3).toString()
+                .replaceAll("\\[","").replaceAll("\\]","");
+        textView4.setText("the object is");
+        textView5.setText("other possibilities:");
+        textView1.setText(text1);
+        textView2.setText(text2);
+        textView3.setText(text3);
+
     }
 
     // Removes digits from label name
