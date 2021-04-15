@@ -3,6 +3,7 @@ package com.example.objectdetection;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.SwitchCompat;
 
 import android.Manifest;
 import android.app.Activity;
@@ -23,6 +24,8 @@ import android.widget.ListView;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import org.w3c.dom.Text;
 
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView textView3;
     private TextView textView4;
     private TextView textView5;
-    private Switch confSwitch;
+    private SwitchCompat confSwitch;
 
     private TextToSpeech mTTS;
 
@@ -82,51 +85,39 @@ public class MainActivity extends AppCompatActivity {
             Log.e("Image Classifier Error", "Error" + e);
         }
 
-        takePic.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (hasPermission("camera")) {
-                    openCamera();
-                } else {
-                    requestPermission("camera");
-                }
+        takePic.setOnClickListener(v -> {
+            if (hasPermission("camera")) {
+                openCamera();
+            } else {
+                requestPermission("camera");
             }
         });
 
-        openGallery.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (hasPermission("readStorage")) {
-                    pickImage();
-                } else {
-                    requestPermission("readStorage");
-                }
+        openGallery.setOnClickListener(v -> {
+            if (hasPermission("readStorage")) {
+                pickImage();
+            } else {
+                requestPermission("readStorage");
             }
         });
 
-        mTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            //TODO: seems like bug with Android Emulator on M1 Macs no sound, to verify this
-            public void onInit(int status) {
-                if (status != TextToSpeech.ERROR) {
-                    mTTS.setLanguage(Locale.US);
-                } else {
-                    Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
-                }
+        //TODO: seems like bug with Android Emulator on M1 Macs no sound, to verify this
+        mTTS = new TextToSpeech(getApplicationContext(), status -> {
+            if (status != TextToSpeech.ERROR) {
+                mTTS.setLanguage(Locale.US);
+            } else {
+                Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
             }
         });
 
-        speak.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String wordToSpeak = textView1.getText().toString()
-                        .replaceAll("[0-9](.*)","").trim();
-                if (wordToSpeak.equals("")) {
-                    Toast.makeText(MainActivity.this, "Invalid Word", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MainActivity.this, wordToSpeak, Toast.LENGTH_SHORT).show();
-                    mTTS.speak(wordToSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
-                }
+        speak.setOnClickListener(v -> {
+            String wordToSpeak = textView1.getText().toString()
+                    .replaceAll("[0-9](.*)","").trim();
+            if (wordToSpeak.equals("")) {
+                Toast.makeText(MainActivity.this, "Invalid Word", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(MainActivity.this, wordToSpeak, Toast.LENGTH_SHORT).show();
+                mTTS.speak(wordToSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });
 
@@ -213,30 +204,27 @@ public class MainActivity extends AppCompatActivity {
         textView3.setText(text3);
 
         // Updates textView with confidence percentages if confidence switch is on
-        confSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView,boolean isChecked) {
-                if (isChecked) {
-                    Log.i("Switch", "ON");
-                    String textConf1 = text1;
-                    String textConf2 = text2;
-                    String textConf3 = text3;
-                    textConf1 = textConf1.concat("  " + predictionsListConf.subList(0,1).toString()
-                            .replaceAll("\\[","").replaceAll("]","") + "%");
-                    textConf2 = textConf2.concat("  " + predictionsListConf.subList(1,2).toString()
-                            .replaceAll("\\[","").replaceAll("]","")+ "%");
-                    textConf3 = textConf3.concat("  " + predictionsListConf.subList(2,3).toString()
-                            .replaceAll("\\[","").replaceAll("]","") + "%");
-                    System.out.println(textConf1);
-                    textView1.setText(textConf1);
-                    textView2.setText(textConf2);
-                    textView3.setText(textConf3);
-                } else {
-                    Log.i("Switch", "OFF");
-                    textView1.setText(text1);
-                    textView2.setText(text2);
-                    textView3.setText(text3);
-                }
+        confSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                Log.i("Switch", "ON");
+                String textConf1 = text1;
+                String textConf2 = text2;
+                String textConf3 = text3;
+                textConf1 = textConf1.concat("  " + predictionsListConf.subList(0,1).toString()
+                        .replaceAll("\\[","").replaceAll("]","") + "%");
+                textConf2 = textConf2.concat("  " + predictionsListConf.subList(1,2).toString()
+                        .replaceAll("\\[","").replaceAll("]","")+ "%");
+                textConf3 = textConf3.concat("  " + predictionsListConf.subList(2,3).toString()
+                        .replaceAll("\\[","").replaceAll("]","") + "%");
+                System.out.println(textConf1);
+                textView1.setText(textConf1);
+                textView2.setText(textConf2);
+                textView3.setText(textConf3);
+            } else {
+                Log.i("Switch", "OFF");
+                textView1.setText(text1);
+                textView2.setText(text2);
+                textView3.setText(text3);
             }
         });
     }

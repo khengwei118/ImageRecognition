@@ -8,6 +8,7 @@
     tools:context=".MainActivity">
 
 
+
     <ImageView
         android:id="@+id/iv_capture"
         android:layout_width="250dp"
@@ -28,11 +29,12 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
         android:layout_marginBottom="24dp"
-        android:drawableLeft="@drawable/ic_camera"
+        app:icon="@drawable/ic_camera"
         android:text="@string/take_picture"
         app:backgroundTint="#606060"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="RtlHardcoded" />
 
     <Button
         android:id="@+id/bt_open_gal"
@@ -41,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="24dp"
-        android:drawableLeft="@drawable/ic_photo"
+        app:icon="@drawable/ic_photo"
         android:text="@string/open_gallery"
         app:backgroundTint="#606060"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -54,11 +56,12 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="5dp"
-        android:drawableLeft="@drawable/ic_speak"
-        android:paddingRight="15dp"
-        android:paddingLeft="15dp"
         android:text="@string/listen"
         android:textSize="12sp"
+        app:icon="@drawable/ic_speak"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
+
         app:backgroundTint="#FFFD765E"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -123,7 +126,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
 
-    <Switch
+    <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/confSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -132,7 +135,9 @@
         android:fontFamily="@font/roboto_light"
         android:text="@string/show_confidence"
         app:layout_constraintBottom_toTopOf="@+id/bt_speak"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:textOn="@string/on"
+        android:textOff="@string/off"/>
 
     <TextView
         android:layout_width="match_parent"
