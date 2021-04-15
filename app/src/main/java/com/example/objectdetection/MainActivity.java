@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
 
         mTTS = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
             @Override
-            //TODO seems to be bug here, TTS doesnt work
+            //TODO: seems like bug with Android Emulator on M1 Macs no sound, to verify this
             public void onInit(int status) {
                 if (status != TextToSpeech.ERROR) {
                     mTTS.setLanguage(Locale.US);
@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "Invalid Word", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this, wordToSpeak, Toast.LENGTH_SHORT).show();
-                    mTTS.speak(wordToSpeak, TextToSpeech.QUEUE_FLUSH, null, "");
+                    mTTS.speak(wordToSpeak, TextToSpeech.QUEUE_FLUSH, null, null);
                 }
             }
         });
@@ -204,8 +204,8 @@ public class MainActivity extends AppCompatActivity {
         String text3 = predictionsList.subList(2,3).toString()
                 .replaceAll("\\[","").replaceAll("\\]","");
 
-        textView4.setText("the object is");
-        textView5.setText("other possibilities:");
+        textView4.setText("the object is:");
+        textView5.setText("related words:");
 
         textView1.setText(text1);
         textView2.setText(text2);
