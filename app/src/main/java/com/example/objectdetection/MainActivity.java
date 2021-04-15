@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity {
         textView5 = findViewById(R.id.textView5);
         confSwitch = findViewById(R.id.confSwitch);
 
+        imageView.setImageResource(R.drawable.ic_droid);
 
         try {
             imageClassifier = new ImageClassifier(this);
@@ -204,8 +205,8 @@ public class MainActivity extends AppCompatActivity {
         String text3 = predictionsList.subList(2,3).toString()
                 .replaceAll("\\[","").replaceAll("\\]","");
 
-        textView4.setText("the object is:");
-        textView5.setText("related words:");
+        textView4.setText("the object is");
+        textView5.setText("or");
 
         textView1.setText(text1);
         textView2.setText(text2);
