@@ -199,14 +199,14 @@ public class MainActivity extends AppCompatActivity {
     // Updates text in the textView boxes
     private void replaceTexts(List<String> predictionsList, List<Double> predictionsListConf) {
         String text1 = predictionsList.subList(0,1).toString()
-                .replaceAll("\\[","").replaceAll("\\]","");
+                .replaceAll("\\[","").replaceAll("]","");
         String text2 = predictionsList.subList(1,2).toString()
-                .replaceAll("\\[","").replaceAll("\\]","");
+                .replaceAll("\\[","").replaceAll("]","");
         String text3 = predictionsList.subList(2,3).toString()
-                .replaceAll("\\[","").replaceAll("\\]","");
+                .replaceAll("\\[","").replaceAll("]","");
 
-        textView4.setText("the object is");
-        textView5.setText("or");
+        textView4.setText(R.string.the_object_is);
+        textView5.setText(R.string.or);
 
         textView1.setText(text1);
         textView2.setText(text2);
@@ -222,11 +222,11 @@ public class MainActivity extends AppCompatActivity {
                     String textConf2 = text2;
                     String textConf3 = text3;
                     textConf1 = textConf1.concat("  " + predictionsListConf.subList(0,1).toString()
-                            .replaceAll("\\[","").replaceAll("\\]","") + "%");
+                            .replaceAll("\\[","").replaceAll("]","") + "%");
                     textConf2 = textConf2.concat("  " + predictionsListConf.subList(1,2).toString()
-                            .replaceAll("\\[","").replaceAll("\\]","")+ "%");
+                            .replaceAll("\\[","").replaceAll("]","")+ "%");
                     textConf3 = textConf3.concat("  " + predictionsListConf.subList(2,3).toString()
-                            .replaceAll("\\[","").replaceAll("\\]","") + "%");
+                            .replaceAll("\\[","").replaceAll("]","") + "%");
                     System.out.println(textConf1);
                     textView1.setText(textConf1);
                     textView2.setText(textConf2);

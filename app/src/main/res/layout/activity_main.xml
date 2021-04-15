@@ -14,7 +14,7 @@
         android:layout_height="250dp"
         android:layout_marginTop="40dp"
         android:layout_marginBottom="40dp"
-        android:contentDescription="ImageBox"
+        android:contentDescription="@string/ImageBox"
         app:layout_constraintBottom_toTopOf="@+id/confSwitch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginBottom="24dp"
         android:drawableLeft="@drawable/ic_camera"
-        android:text="Take Picture"
+        android:text="@string/take_picture"
         app:backgroundTint="#606060"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -42,7 +42,7 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="24dp"
         android:drawableLeft="@drawable/ic_photo"
-        android:text="Open Gallery"
+        android:text="@string/open_gallery"
         app:backgroundTint="#606060"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -55,9 +55,10 @@
         android:layout_marginEnd="40dp"
         android:layout_marginBottom="5dp"
         android:drawableLeft="@drawable/ic_speak"
-        android:paddingRight="20dp"
-        android:text="Listen"
-        android:textSize="12dp"
+        android:paddingRight="15dp"
+        android:paddingLeft="15dp"
+        android:text="@string/listen"
+        android:textSize="12sp"
         app:backgroundTint="#FFFD765E"
         app:layout_constraintBottom_toTopOf="@+id/textView4"
         app:layout_constraintEnd_toEndOf="parent" />
@@ -104,7 +105,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:fontFamily="@font/roboto_light"
-        android:text="Select a picture to get started"
+        android:text="@string/start_text"
         android:textSize="18sp"
         app:layout_constraintBottom_toTopOf="@+id/textView1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -129,7 +130,7 @@
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="3dp"
         android:fontFamily="@font/roboto_light"
-        android:text="Show Confidence"
+        android:text="@string/show_confidence"
         app:layout_constraintBottom_toTopOf="@+id/bt_speak"
         app:layout_constraintEnd_toEndOf="parent" />
 
