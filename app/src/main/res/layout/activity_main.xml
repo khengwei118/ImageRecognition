@@ -28,11 +28,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="40dp"
+        android:layout_marginEnd="20dp"
         android:layout_marginBottom="24dp"
-        app:icon="@drawable/ic_camera"
         android:text="@string/take_picture"
         app:backgroundTint="#606060"
+        app:icon="@drawable/ic_camera"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/bt_open_gal"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="RtlHardcoded" />
 
