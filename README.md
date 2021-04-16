@@ -1,4 +1,4 @@
-# Snapify
+# RadSnapper
 Simple image recognition app created with TensorFlow Lite.
 
 ## Description
@@ -20,6 +20,7 @@ This app can also be used by anyone who would just like to try a simple Machine 
 - Mobilenet_V2_1.0_224_quant from https://www.tensorflow.org/lite/guide/hosted_models#quantized_models
 - Android SDK
 - Java
+- XML
 
 ## Known issues
 - Sound feature could not be tested at this time due to Android Emulator incompibility with Apple Silicon Macs. https://androidstudio.googleblog.com/2020/12/android-emulator-apple-silicon-preview.html
