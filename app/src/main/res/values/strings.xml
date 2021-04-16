@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">Snapify</string>
-    <string name="Snapify"/>
+    <string name="app_name">RadSnapper</string>
+    <string name="RadSnapper"/>
     <string name="ImageBox"/>
     <string name="take_picture">Take Picture</string>
     <string name="open_gallery">Open Gallery</string>
