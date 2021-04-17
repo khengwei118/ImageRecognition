@@ -83,7 +83,7 @@ public class ImageClassifier {
         // sorting predictions based on confidence
         Collections.sort(recognitions);
         // returning top 5 predictions
-        recognitions.subList(0, MAX_SIZE > recognitions.size() ? recognitions.size() : MAX_SIZE).clear();
+        recognitions.subList(0, Math.min(MAX_SIZE, recognitions.size())).clear();
         return recognitions;
     }
 
@@ -93,7 +93,7 @@ public class ImageClassifier {
         int cropSize = Math.min(bitmap.getWidth(), bitmap.getHeight());
         ImageProcessor imageProcessor = new ImageProcessor.Builder()
                 .add(new ResizeWithCropOrPadOp(cropSize, cropSize))
-                .add(new ResizeOp(imageResizeX, imageResizeY, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
+                .add(new ResizeOp(imageResizeY, imageResizeX, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
                 .add(new Rot90Op(noOfRotations))
                 .add(new NormalizeOp(IMAGE_MEAN, IMAGE_STD))
                 .build();

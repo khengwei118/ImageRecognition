@@ -7,9 +7,13 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +33,10 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 
 import org.w3c.dom.Text;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -52,7 +59,6 @@ public class MainActivity extends AppCompatActivity {
     private SwitchCompat confSwitch;
 
     private TextToSpeech mTTS;
-
 
 
     @Override
@@ -101,7 +107,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //TODO: seems like bug with Android Emulator on M1 Macs no sound, to verify this
         mTTS = new TextToSpeech(getApplicationContext(), status -> {
             if (status != TextToSpeech.ERROR) {
                 mTTS.setLanguage(Locale.US);
@@ -112,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
         speak.setOnClickListener(v -> {
             String wordToSpeak = textView1.getText().toString()
-                    .replaceAll("[0-9](.*)","").trim();
+                    .replaceAll("[0-9](.*)", "").trim();
             if (wordToSpeak.equals("")) {
                 Toast.makeText(MainActivity.this, "Invalid Word", Toast.LENGTH_SHORT).show();
             } else {
@@ -136,17 +141,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if this is the result of our camera image request
         confSwitch.setChecked(false);
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
-            Bitmap photo = (Bitmap) data.getExtras().get("data");
-            // displays the bitmap in ImageView
-            imageView.setImageBitmap(photo);
-            classifyImage(photo);
+            Bitmap cameraPhoto = ImageUtils.getBitmapFromIntent(this, data);
+            //cameraPhoto = rotateBitmap(cameraPhoto, 90);
+
+            imageView.setImageBitmap(cameraPhoto);
+            classifyImage(cameraPhoto);
+            //String imgPath = ImageUtils.createFile(this, photo);
+            //File imageFile = new File(imgPath);
+            //imageView.setImageBitmap(photo);
+            //classifyImage(photo);
         }
         if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             Uri imageUri = data.getData();
@@ -189,12 +198,12 @@ public class MainActivity extends AppCompatActivity {
 
     // Updates text in the textView boxes
     private void replaceTexts(List<String> predictionsList, List<Double> predictionsListConf) {
-        String text1 = predictionsList.subList(0,1).toString()
-                .replaceAll("\\[","").replaceAll("]","");
-        String text2 = predictionsList.subList(1,2).toString()
-                .replaceAll("\\[","").replaceAll("]","");
-        String text3 = predictionsList.subList(2,3).toString()
-                .replaceAll("\\[","").replaceAll("]","");
+        String text1 = predictionsList.subList(0, 1).toString()
+                .replaceAll("\\[", "").replaceAll("]", "");
+        String text2 = predictionsList.subList(1, 2).toString()
+                .replaceAll("\\[", "").replaceAll("]", "");
+        String text3 = predictionsList.subList(2, 3).toString()
+                .replaceAll("\\[", "").replaceAll("]", "");
 
         textView4.setText(R.string.the_object_is);
         textView5.setText(R.string.or);
@@ -210,12 +219,12 @@ public class MainActivity extends AppCompatActivity {
                 String textConf1 = text1;
                 String textConf2 = text2;
                 String textConf3 = text3;
-                textConf1 = textConf1.concat("  " + predictionsListConf.subList(0,1).toString()
-                        .replaceAll("\\[","").replaceAll("]","") + "%");
-                textConf2 = textConf2.concat("  " + predictionsListConf.subList(1,2).toString()
-                        .replaceAll("\\[","").replaceAll("]","")+ "%");
-                textConf3 = textConf3.concat("  " + predictionsListConf.subList(2,3).toString()
-                        .replaceAll("\\[","").replaceAll("]","") + "%");
+                textConf1 = textConf1.concat("  " + predictionsListConf.subList(0, 1).toString()
+                        .replaceAll("\\[", "").replaceAll("]", "") + "%");
+                textConf2 = textConf2.concat("  " + predictionsListConf.subList(1, 2).toString()
+                        .replaceAll("\\[", "").replaceAll("]", "") + "%");
+                textConf3 = textConf3.concat("  " + predictionsListConf.subList(2, 3).toString()
+                        .replaceAll("\\[", "").replaceAll("]", "") + "%");
                 System.out.println(textConf1);
                 textView1.setText(textConf1);
                 textView2.setText(textConf2);
@@ -227,6 +236,29 @@ public class MainActivity extends AppCompatActivity {
                 textView3.setText(text3);
             }
         });
+    }
+
+    private static Bitmap rotateImageIfRequired(Context context, Bitmap img, Uri selectedImage) throws IOException {
+
+        InputStream input = context.getContentResolver().openInputStream(selectedImage);
+        ExifInterface ei;
+        if (Build.VERSION.SDK_INT > 23)
+            ei = new ExifInterface(input);
+        else
+            ei = new ExifInterface(selectedImage.getPath());
+
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+
+        switch (orientation) {
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                return rotateBitmap(img, 90);
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                return rotateBitmap(img, 180);
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                return rotateBitmap(img, 270);
+            default:
+                return img;
+        }
     }
 
     // Removes digits from label name
@@ -276,7 +308,7 @@ public class MainActivity extends AppCompatActivity {
 
     // Checks for all permissions
     private boolean hasAllPermissions(int[] grantResults) {
-        for (int result: grantResults) {
+        for (int result : grantResults) {
             if (result == PackageManager.PERMISSION_DENIED) {
                 return false;
             }
@@ -286,14 +318,14 @@ public class MainActivity extends AppCompatActivity {
 
     // Requests permissions, takes in String "camera" or "readStorage"
     private void requestPermission(String permType) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("camera")) {
-            if(shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("camera")) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
                 Toast.makeText(this, "Camera Permission Required", Toast.LENGTH_SHORT).show();
             }
             requestPermissions(new String[]{Manifest.permission.CAMERA}, CAMERA_PERMISSION_REQUEST_CODE);
         }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("readStorage")) {
-            if(shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("readStorage")) {
+            if (shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 Toast.makeText(this, "Storage Permission Required", Toast.LENGTH_SHORT).show();
             }
             requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, READ_STORAGE_PERMISSION_REQUEST_CODE);
@@ -316,12 +348,58 @@ public class MainActivity extends AppCompatActivity {
     // Checks for permissions if Android version is later than M
     // Checks for permissions to open camera and read storage
     private boolean hasPermission(String permType) {
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("camera")) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("camera")) {
             return checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED;
         }
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("readStorage")) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && permType.equalsIgnoreCase("readStorage")) {
             return checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED;
         }
         return true;
+    }
+
+    public static Bitmap rotateBitmap(Bitmap source, float angle)
+    {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    }
+
+    private static class ImageUtils {
+        public static Bitmap getBitmapFromIntent(Context context, Intent data) {
+            Bitmap bitmap = null;
+
+            if (data.getData() == null) {
+                bitmap = (Bitmap) data.getExtras().get("data");
+            } else {
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), data.getData());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            return bitmap;
+
+        }
+
+        public static String createFile(Context context, Bitmap data) {
+            Uri selectedImage = getImageUri(context, data);
+            String[] filePath = {MediaStore.Images.Media.DATA};
+            Cursor c = context.getContentResolver().query(selectedImage, filePath, null, null, null);
+            c.moveToFirst();
+            c.getColumnIndex(filePath[0]);
+            int columnIndex = c.getColumnIndex(filePath[0]);
+            String picturePath = c.getString(columnIndex);
+            c.close();
+
+            return picturePath;
+        }
+
+        public static Uri getImageUri(Context context, Bitmap inImage) {
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), inImage, "Image", null);
+            return Uri.parse(path);
+        }
     }
 }
