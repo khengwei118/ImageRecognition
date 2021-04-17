@@ -12,6 +12,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
@@ -145,19 +146,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // if this is the result of our camera image request
         confSwitch.setChecked(false);
+
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
-            Bitmap cameraPhoto = ImageUtils.getBitmapFromIntent(this, data);
-            //cameraPhoto = rotateBitmap(cameraPhoto, 90);
-
-            imageView.setImageBitmap(cameraPhoto);
-            classifyImage(cameraPhoto);
+            Bitmap photo = ImageUtils.getBitmapFromIntent(this, data);
+            photo = rotateBitmap(photo, 90);
+            imageView.setImageBitmap(photo);
+            classifyImage(photo);
             //String imgPath = ImageUtils.createFile(this, photo);
             //File imageFile = new File(imgPath);
             //imageView.setImageBitmap(photo);
             //classifyImage(photo);
         }
         if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
             Uri imageUri = data.getData();
             try {
                 // casts URI to Bitmap
@@ -171,6 +173,66 @@ public class MainActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+/*
+    public static Bitmap handleSamplingAndRotationBitmap(Context context, Uri selectedImage)
+            throws IOException {
+        int MAX_HEIGHT = 1024;
+        int MAX_WIDTH = 1024;
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        final BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = true;
+        InputStream imageStream = context.getContentResolver().openInputStream(selectedImage);
+        BitmapFactory.decodeStream(imageStream, null, options);
+        imageStream.close();
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT);
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false;
+        imageStream = context.getContentResolver().openInputStream(selectedImage);
+        Bitmap img = BitmapFactory.decodeStream(imageStream, null, options);
+
+        img = rotateImageIfRequired(img, selectedImage);
+        return img;
+    }
+
+    private static int calculateInSampleSize(BitmapFactory.Options options,
+                                             int reqWidth, int reqHeight) {
+        // Raw height and width of image
+        final int height = options.outHeight;
+        final int width = options.outWidth;
+        int inSampleSize = 1;
+
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and width
+            final int heightRatio = Math.round((float) height / (float) reqHeight);
+            final int widthRatio = Math.round((float) width / (float) reqWidth);
+
+            // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
+            // with both dimensions larger than or equal to the requested height and width.
+            inSampleSize = Math.min(heightRatio, widthRatio);
+
+            // This offers some additional logic in case the image has a strange
+            // aspect ratio. For example, a panorama may have a much larger
+            // width than height. In these cases the total pixels might still
+            // end up being too large to fit comfortably in memory, so we should
+            // be more aggressive with sample down the image (=larger inSampleSize).
+
+            final float totalPixels = width * height;
+
+            // Anything more than 2x the requested pixels we'll sample down further
+            final float totalReqPixelsCap = reqWidth * reqHeight * 2;
+
+            while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+                inSampleSize++;
+            }
+        }
+        return inSampleSize;
+    }
+    */
 
     // Runs the image classification model and displays in list view
     private void classifyImage(Bitmap photo) {
@@ -238,28 +300,34 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private static Bitmap rotateImageIfRequired(Context context, Bitmap img, Uri selectedImage) throws IOException {
+    /*
+    private static Bitmap rotateImageIfRequired(Bitmap img, Uri selectedImage) throws IOException {
 
-        InputStream input = context.getContentResolver().openInputStream(selectedImage);
-        ExifInterface ei;
-        if (Build.VERSION.SDK_INT > 23)
-            ei = new ExifInterface(input);
-        else
-            ei = new ExifInterface(selectedImage.getPath());
-
+        ExifInterface ei = new ExifInterface(selectedImage.getPath());
         int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 
         switch (orientation) {
             case ExifInterface.ORIENTATION_ROTATE_90:
-                return rotateBitmap(img, 90);
+                return rotateImage(img, 90);
             case ExifInterface.ORIENTATION_ROTATE_180:
-                return rotateBitmap(img, 180);
+                return rotateImage(img, 180);
             case ExifInterface.ORIENTATION_ROTATE_270:
-                return rotateBitmap(img, 270);
+                return rotateImage(img, 270);
             default:
                 return img;
         }
     }
+
+    private static Bitmap rotateImage(Bitmap img, int degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        Bitmap rotatedImg = Bitmap.createBitmap(img, 0, 0, img.getWidth(), img.getHeight(), matrix, true);
+        img.recycle();
+        return rotatedImg;
+    }
+    */
+
+
 
     // Removes digits from label name
     // Needed due to certain TensorFlow models having numbers before words in labels.txt String
@@ -364,6 +432,7 @@ public class MainActivity extends AppCompatActivity {
         return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
     }
 
+
     private static class ImageUtils {
         public static Bitmap getBitmapFromIntent(Context context, Intent data) {
             Bitmap bitmap = null;
@@ -402,4 +471,6 @@ public class MainActivity extends AppCompatActivity {
             return Uri.parse(path);
         }
     }
+
+
 }
