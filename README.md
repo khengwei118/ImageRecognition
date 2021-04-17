@@ -23,7 +23,8 @@ This app can also be used by anyone who would just like to try a simple Machine 
 - XML
 
 ## Known issues
-- Sound feature could not be tested at this time due to Android Emulator incompibility with Apple Silicon Macs. https://androidstudio.googleblog.com/2020/12/android-emulator-apple-silicon-preview.html
+- Image Recognition accuracy is not very high
+- Certain phones would get image rotated in certain cases due to EXIF data
 
 
 
