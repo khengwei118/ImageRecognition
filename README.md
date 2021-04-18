@@ -22,13 +22,14 @@ This app can also be used by anyone who would just like to try a simple Machine 
 https://www.youtube.com/watch?v=xtteYcF4WrE
 
 #### Screenshots
+##### From Camera
 <img src="/app/src/main/assets/screenshots/Screenshot_20210417-231427.png" width="200" height="400"> <img src="/app/src/main/assets/screenshots/Screenshot_20210417-231438.png" width="200" height="400"> 
 <img src="/app/src/main/assets/screenshots/Screenshot_20210417-231609.png" width="200" height="400"> 
 <img src="/app/src/main/assets/screenshots/Screenshot_20210417-231625.png" width="200" height="400">
-<img src="/app/src/main/assets/screenshots/Screenshot_20210417-223104.png" width="200" height="400">
-<img src="/app/src/main/assets/screenshots/Screenshot_20210417-223113.png" width="200" height="400">
+##### From Gallery
+<img src="/app/src/main/assets/screenshots/Screenshot_20210417-223104.png" width="200" height="400"> <img src="/app/src/main/assets/screenshots/Screenshot_20210417-223113.png" width="200" height="400">
 <img src="/app/src/main/assets/screenshots/Screenshot_20210417-223122.png" width="200" height="400">
-<img src="/app/src/main/assets/screenshots/Screenshot_20210417-223133.png" width="200" height="400">
+<img src="/app/src/main/assets/screenshots/Screenshot_20210417-223045.png" width="200" height="400">
 
 
 ## Technologies
