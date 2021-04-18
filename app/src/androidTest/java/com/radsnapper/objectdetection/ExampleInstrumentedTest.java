@@ -1,4 +1,4 @@
-package com.example.objectdetection;
+package com.radsnapper.objectdetection;
 
 import android.content.Context;
 

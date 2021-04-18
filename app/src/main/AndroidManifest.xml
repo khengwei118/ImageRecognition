@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.objectdetection">
+    package="com.radsnapper.objectdetection">
 
 
     <uses-permission android:name="android.permission.CAMERA"/>
@@ -13,7 +13,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme_splashScreenTheme"
         android:allowBackup="true">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.radsnapper.objectdetection.MainActivity">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
