@@ -10,7 +10,7 @@ It outputs the highest confidence object first, and will also print the 2nd and 
 - Button to play the recognized object's pronunciation.
 
 ### Demo
-https://youtu.be/7RRkzl0jwlU
+https://www.youtube.com/watch?v=xtteYcF4WrE
 
 ## Use case
 This app can be used by anyone who would like to learn English. 
@@ -28,6 +28,9 @@ This app can also be used by anyone who would just like to try a simple Machine 
 ## Known issues
 - Image Recognition generally works well, but due to labels limitation it can only recognize 1000 objects.
 - Certain phones would get image rotated in certain cases due to EXIF data.
+
+## Credits
+Credits to Adriana for drawing app logos and graphics.
 
 
 
