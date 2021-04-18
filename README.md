@@ -19,7 +19,7 @@ This app can also be used by anyone who would just like to try a simple Machine 
 
 ## Demo
 #### YouTube Video
-https://www.youtube.com/watch?v=xtteYcF4WrE
+https://youtu.be/R2xjVT7bIYU
 
 #### Screenshots
 ##### From Camera
