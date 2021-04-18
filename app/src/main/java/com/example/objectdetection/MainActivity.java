@@ -201,8 +201,8 @@ public class MainActivity extends AppCompatActivity {
         String text3 = predictionsList.subList(2, 3).toString()
                 .replaceAll("\\[", "").replaceAll("]", "");
 
-        textView4.setText(R.string.the_object_is);
-        textView5.setText(R.string.or);
+        textView4.setText("");
+        textView5.setText(R.string.possible_objects);
 
         textView1.setText(text1);
         textView2.setText(text2);

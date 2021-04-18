@@ -136,10 +136,11 @@
         android:layout_marginBottom="3dp"
         android:fontFamily="@font/roboto_light"
         android:text="@string/show_confidence"
-        app:layout_constraintBottom_toTopOf="@+id/bt_speak"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textColorLink="#9AFF00"
+        android:textOff="@string/off"
         android:textOn="@string/on"
-        android:textOff="@string/off"/>
+        app:layout_constraintBottom_toTopOf="@+id/bt_speak"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <TextView
         android:layout_width="match_parent"

@@ -8,6 +8,7 @@
     <string name="start_text">Select a picture to get started</string>
     <string name="show_confidence">Show Confidence</string>
     <string name="the_object_is">the object is</string>
+    <string name="possible_objects">possible objects</string>
     <string name="or">or</string>
     <string name="on">ON</string>
     <string name="off">OFF</string>
