@@ -21,7 +21,7 @@ This app can be used to identify hundreds of animal species and breeds. These in
 - Other Aquatic animals such as Fish, Sharks and Whales
 - Insects such as Beetles, Butterflies and Spiders
 
-This app is especially helpful for non-English speakers who would like to learn the language.
+This app is especially helpful for passionate wildlife/animal observers and non-English speakers who would like to learn the language.
 As a "point and shoot" users can learn what the object is in English and even hear the pronunciation.
 This app can also be used by anyone who would just like to try a simple Machine Learning app on their phone.
 
