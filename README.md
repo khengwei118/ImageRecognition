@@ -9,6 +9,9 @@ It outputs the highest confidence object first, and will also print the 2nd and 
 - Switch to turn on or off display of confidence level. This is off by default.
 - Button to play the recognized object's pronunciation.
 
+### Demo
+https://youtu.be/7RRkzl0jwlU
+
 ## Use case
 This app can be used by anyone who would like to learn English. 
 This is especially helpful for young children or non-English speakers who would like to learn the language.
@@ -23,8 +26,8 @@ This app can also be used by anyone who would just like to try a simple Machine 
 - XML
 
 ## Known issues
-- Image Recognition accuracy is not very high
-- Certain phones would get image rotated in certain cases due to EXIF data
+- Image Recognition generally works well, but due to labels limitation it can only recognize 1000 objects.
+- Certain phones would get image rotated in certain cases due to EXIF data.
 
 
 
