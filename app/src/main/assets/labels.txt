@@ -231,7 +231,7 @@
  230  Old English sheepdog, bobtail
  231  Shetland sheepdog, Shetland sheep dog, Shetland
  232  collie
- 233  Border collie
+ 233  Border Collie
  234  Bouvier des Flandres, Bouviers des Flandres
  235  Rottweiler
  236  German shepherd, German shepherd dog, German police dog, alsatian
@@ -248,8 +248,8 @@
  247  Great Dane
  248  Saint Bernard, St Bernard
  249  Eskimo dog, husky
- 250  malamute, malemute, Alaskan malamute
- 251  Siberian husky
+ 250  Alaskan Malamute
+ 251  Siberian Husky
  252  dalmatian, coach dog, carriage dog
  253  affenpinscher, monkey pinscher, monkey dog
  254  basenji
@@ -262,8 +262,8 @@
  261  chow, chow chow
  262  keeshond
  263  Brabancon griffon
- 264  Pembroke, Pembroke Welsh corgi
- 265  Cardigan, Cardigan Welsh corgi
+ 264  Pembroke Welsh Corgi
+ 265  Cardigan Welsh Corgi
  266  toy poodle
  267  miniature poodle
  268  standard poodle
