@@ -9,6 +9,7 @@ import org.tensorflow.lite.Interpreter;
 import org.tensorflow.lite.support.common.FileUtil;
 import org.tensorflow.lite.support.common.TensorProcessor;
 import org.tensorflow.lite.support.common.ops.NormalizeOp;
+import org.tensorflow.lite.support.common.ops.QuantizeOp;
 import org.tensorflow.lite.support.image.ImageProcessor;
 import org.tensorflow.lite.support.image.TensorImage;
 import org.tensorflow.lite.support.image.ops.ResizeOp;
@@ -28,9 +29,11 @@ public class ImageClassifier {
 
     private static final float PROBABILITY_MEAN = 0.0f;
     private static final float PROBABILITY_STD = 255.0f;
+    //private static final float IMAGE_STD = 127.5f;
+    //private static final float IMAGE_MEAN = 127.5f;
     private static final float IMAGE_STD = 1.0f;
     private static final float IMAGE_MEAN = 0.0f;
-    private static final int MAX_SIZE = 5;
+    private static final int MAX_SIZE = 0;
 
 
     private final Interpreter tensorClassifier;
@@ -83,7 +86,7 @@ public class ImageClassifier {
         // sorting predictions based on confidence
         Collections.sort(recognitions);
         // returning top 5 predictions
-        recognitions.subList(0, Math.min(MAX_SIZE, recognitions.size())).clear();
+        //recognitions.subList(0, Math.min(MAX_SIZE, recognitions.size())).clear();
         return recognitions;
     }
 
@@ -96,6 +99,7 @@ public class ImageClassifier {
                 .add(new ResizeOp(imageResizeY, imageResizeX, ResizeOp.ResizeMethod.NEAREST_NEIGHBOR))
                 .add(new Rot90Op(noOfRotations))
                 .add(new NormalizeOp(IMAGE_MEAN, IMAGE_STD))
+               // .add(new QuantizeOp(128.0f, 1/128.0f))
                 .build();
         return imageProcessor.process(inputImageBuffer);
 

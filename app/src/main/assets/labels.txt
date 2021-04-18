@@ -280,7 +280,7 @@
  279  kit fox, Vulpes macrotis
  280  Arctic fox, white fox, Alopex lagopus
  281  grey fox, gray fox, Urocyon cinereoargenteus
- 282  tabby, tabby cat
+ 282  tabby cat
  283  tiger cat
  284  Persian cat
  285  Siamese cat, Siamese
