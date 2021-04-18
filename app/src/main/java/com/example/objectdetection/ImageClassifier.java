@@ -29,8 +29,6 @@ public class ImageClassifier {
 
     private static final float PROBABILITY_MEAN = 0.0f;
     private static final float PROBABILITY_STD = 255.0f;
-    //private static final float IMAGE_STD = 127.5f;
-    //private static final float IMAGE_MEAN = 127.5f;
     private static final float IMAGE_STD = 1.0f;
     private static final float IMAGE_MEAN = 0.0f;
     private static final int MAX_SIZE = 0;
@@ -70,8 +68,6 @@ public class ImageClassifier {
 
         probabilityProcessor = new TensorProcessor.Builder().add(new NormalizeOp(PROBABILITY_MEAN, PROBABILITY_STD))
                 .build();
-
-
     }
 
     public List<Recognition> recognizeImage(final Bitmap bitmap, final int sensorOrientation) {
@@ -85,8 +81,6 @@ public class ImageClassifier {
         }
         // sorting predictions based on confidence
         Collections.sort(recognitions);
-        // returning top 5 predictions
-        //recognitions.subList(0, Math.min(MAX_SIZE, recognitions.size())).clear();
         return recognitions;
     }
 
@@ -131,15 +125,6 @@ public class ImageClassifier {
 
         public void setConfidence(float confidence) {
             this.confidence = confidence;
-        }
-
-
-        @Override
-        public String toString() {
-            return "Recognition{" +
-                    "name='" + name + '\'' +
-                    ", confidence=" + confidence +
-                    '}';
         }
 
         @Override
