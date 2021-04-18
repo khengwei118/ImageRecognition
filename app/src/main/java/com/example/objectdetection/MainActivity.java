@@ -83,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
         textView5 = findViewById(R.id.textView5);
         confSwitch = findViewById(R.id.confSwitch);
 
-        imageView.setImageResource(R.drawable.ic_droid);
+        imageView.setImageResource(R.drawable.radsnapper_white);
+
 
         try {
             imageClassifier = new ImageClassifier(this);
