@@ -9,10 +9,19 @@ It outputs the highest confidence object first, and will also print the 2nd and 
 - Switch to turn on or off display of confidence level. This is off by default.
 - Button to play the recognized object's pronunciation.
 
+#### Use case
+This app can be used to identify hundreds of animal species and breeds. These include:
+- Domestic Cats such as Tabby, Persian and Siamese
+- Wildcats such as Lion, Cheetah and Jaguar
+- Over 110 breeds of Domestic Dogs such as Retrievers, Terriers and Spaniels
+- Small birds such as Jays, Magpies and Finches
+- Bigger birds such as Geese, Crane, Heron and Egrets
+- Reptiles such as Snakes, Lizards, Salamanders and Crocodiles
+- Shellfish such as Crabs and Lobsters
+- Other Aquatic animals such as Fish, Sharks and Whales
+- Insects such as Beetles, Butterflies and Spiders
 
-## Use case
-This app can be used by anyone who would like to learn English. 
-This is especially helpful for non-English speakers who would like to learn the language.
+This app is especially helpful for non-English speakers who would like to learn the language.
 As a "point and shoot" users can learn what the object is in English and even hear the pronunciation.
 This app can also be used by anyone who would just like to try a simple Machine Learning app on their phone.
 
