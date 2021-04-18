@@ -14,7 +14,7 @@ https://www.youtube.com/watch?v=xtteYcF4WrE
 
 ## Use case
 This app can be used by anyone who would like to learn English. 
-This is especially helpful for young children or non-English speakers who would like to learn the language.
+This is especially helpful for non-English speakers who would like to learn the language.
 As a "point and shoot" users can learn what the object is in English and even hear the pronunciation.
 This app can also be used by anyone who would just like to try a simple Machine Learning app on their phone.
 
