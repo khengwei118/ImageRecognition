@@ -1,20 +1,28 @@
 package com.radsnapper.objectdetection;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+//import android.support.media.ExifInterface;
+
+
 import android.Manifest;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
@@ -23,13 +31,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
+
 
     private static final int CAMERA_PERMISSION_REQUEST_CODE = 1000;
     private static final int CAMERA_REQUEST_CODE = 1001;
@@ -88,7 +100,11 @@ public class MainActivity extends AppCompatActivity {
 
         takePic.setOnClickListener(v -> {
             if (hasPermission("camera")) {
-                openCamera();
+                try {
+                    openCamera();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
                 requestPermission("camera");
             }
@@ -124,15 +140,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         confSwitch.setChecked(false);
         if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             // getting bitmap of the image
-            Bitmap photo = ImageUtils.getBitmapFromIntent(this, data);
-            photo = rotateBitmap(photo, 90);
+            //Bitmap photo = ImageUtils.getBitmapFromIntent(this, data);
+            Bitmap photo = (Bitmap) data.getExtras().get("data");
+
+            //photo = rotateBitmap(this, imageUri, photo);
+            //photo = rotateBitmap(photo, 90);
             imageView.setImageBitmap(photo);
             classifyImage(photo);
+
             // to save captured image to storage
             //String imgPath = ImageUtils.createFile(this, photo);
             //File imageFile = new File(imgPath);
@@ -141,9 +162,12 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == IMAGE_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
             Uri imageUri = data.getData();
+
+
             try {
                 // casts URI to Bitmap
                 Bitmap photo = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                photo = rotateBitmap(this, imageUri, photo);
                 imageView.setImageBitmap(photo);
                 classifyImage(photo);
             } catch (IOException e) {
@@ -153,6 +177,42 @@ public class MainActivity extends AppCompatActivity {
 
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
+    public static Bitmap rotateBitmap(Context context, Uri photoUri, Bitmap bitmap) {
+        int orientation = getOrientation(context, photoUri);
+        if (orientation <= 0) {
+            return bitmap;
+        }
+        Matrix matrix = new Matrix();
+        matrix.postRotate(orientation);
+        bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        return bitmap;
+    }
+
+    private static int getOrientation(Context context, Uri photoUri) {
+        Cursor cursor = context.getContentResolver().query(photoUri,
+                new String[]{MediaStore.Images.ImageColumns.ORIENTATION}, null, null, null);
+
+        if (cursor.getCount() != 1) {
+            cursor.close();
+            return -1;
+        }
+
+        cursor.moveToFirst();
+        int orientation = cursor.getInt(0);
+        cursor.close();
+        cursor = null;
+        return orientation;
+    }
+
+    public static boolean setOrientation(Context context, Uri fileUri, int orientation) {
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.Images.Media.ORIENTATION, orientation);
+        int rowsUpdated = context.getContentResolver().update(fileUri, values, null, null);
+        return rowsUpdated > 0;
+    }
+
 
     // Runs the image classification model and displays in list view
     private void classifyImage(Bitmap photo) {
@@ -242,7 +302,11 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (hasAllPermissions(grantResults)) {
-                openCamera();
+                try {
+                    openCamera();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             } else {
                 requestPermission("camera");
             }
@@ -279,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     // Captures image from camera
-    private void openCamera() {
+    private void openCamera() throws IOException {
         Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
         startActivityForResult(cameraIntent, CAMERA_REQUEST_CODE);
     }
