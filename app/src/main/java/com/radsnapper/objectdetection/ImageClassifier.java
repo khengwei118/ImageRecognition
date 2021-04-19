@@ -45,7 +45,7 @@ public class ImageClassifier {
         //loading the model
         @NonNull MappedByteBuffer classifierModel = FileUtil.loadMappedFile(activity,
                 "mobilenet_v2_1.0_224_quant.tflite");
-        labels = FileUtil.loadLabels(activity, "labels.txt");
+        labels = FileUtil.loadLabels(activity, "labels_capitalized.txt");
 
         tensorClassifier = new Interpreter(classifierModel, null);
 
